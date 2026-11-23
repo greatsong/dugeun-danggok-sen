@@ -421,3 +421,9 @@ body{background:#e9edf5}
 #sMap .frh{padding:12px 16px}#sMap .frh b{font-size:21px}#sMap .frh small{font-size:14px}
 #sMap .frec dl{padding:4px 16px 6px}
 #sMap .frfoot{font-size:15px;padding:10px 16px 12px}
+/* 2장: 화살표가 → 먼저, ← 나중에 */
+#sMsg .link.step > *{opacity:0;transition:opacity .45s ease,transform .45s ease;transform:translateX(-10px)}
+#sMsg .link.step.in > *{opacity:1;transform:none}
+#sMsg .link.step.in > :nth-child(1),#sMsg .link.step.in > :nth-child(2){transition-delay:.15s}
+#sMsg .link.step.in > :nth-child(3),#sMsg .link.step.in > :nth-child(4){transition-delay:1.1s;transform:none}
+#sMsg .link.step > :nth-child(3),#sMsg .link.step > :nth-child(4){transform:translateX(10px)}
