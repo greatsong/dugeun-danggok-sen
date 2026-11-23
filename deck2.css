@@ -504,3 +504,14 @@ body{background:#e9edf5}
 #sFlow .f5loop span{font-size:28px;margin-right:6px}
 
 .ms-t{font-size:15px}.ms-t.s{font-size:13px}
+/* 성운: K개 모두 이름표 · 학생은 '서윤' 노란 별 */
+.e3j.rs{margin:-14px 0 0 10px;padding:2px 8px;font-size:15px;border-radius:8px;background:rgba(11,18,48,.7);border-color:rgba(253,230,138,.35);box-shadow:none;white-space:nowrap}
+.e3j.rs b{font-weight:750}
+.e3me{margin:-48px 0 0 0;translate:-50% 0;background:#facc15;color:#422006;border-radius:10px;padding:3px 12px;font-size:19px;font-weight:900;box-shadow:0 2px 10px rgba(0,0,0,.35)}
+/* 이름표 자리는 스크립트가 계산(겹침 피하기) */
+.e3j,.e3j.r0,.e3j.r1,.e3j.r2,.e3j.rs,.e3me{margin:0 !important;translate:none !important}
+
+.e3me{font-size:15px !important;padding:1px 8px !important;border-radius:7px !important}
+.e3j.pk{background:#fff;color:#0f172a;border:2px solid #facc15;font-size:17px;padding:4px 10px;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.4);z-index:3}
+.e3j.pk em{color:#b45309}.e3j.pk small{color:#475569}
+.e3stage canvas.e3gl{cursor:pointer}

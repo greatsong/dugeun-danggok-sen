@@ -82,7 +82,7 @@
     if (it.type === "newstar") return head(it) + '<div class="nsbox" data-lb="' + it.to + '" data-cap="' + esc(it.head) + '"><img class="ns-from" src="' + it.from + '" alt="처음 별자리"><img class="ns-to" src="' + it.to + '" alt="활동을 담은 뒤 별자리">' +
       '<div class="ns-burst" style="left:' + it.star[0] + '%;top:' + it.star[1] + '%"><i></i><i></i><i></i><b>★</b></div><div class="ns-tag" style="left:' + it.star[0] + '%;top:' + it.star[1] + '%">새로운 별 · ' + esc(it.starLabel) + '</div><span class="ns-step s1">처음</span><span class="ns-step s2">활동을 담은 뒤</span></div>' + chips(it.chips);
     if (it.type === "trio") return head(it) + '<div class="triobox' + (it.anim ? ' anim' : '') + '">' + it.imgs.map(function (m, k) { return '<figure style="--i:' + k + '" data-lb="' + m[0] + '" data-cap="' + esc(m[1]) + '"><img src="' + m[0] + '" alt="' + esc(m[1]) + ' 꿈 보드(모의 학생)"><figcaption>' + esc(m[1]) + '</figcaption></figure>'; }).join("") + '</div>' + chips(it.chips);
-    if (it.type === "embed3d") return head(it) + '<div class="e3"><div class="e3stage"><p class="e3cap">점 하나 = 직업 하나(미국 노동부 O*NET 923개, 색 = 직업군) · 흰 별 = 서윤의 Love & Well · 금빛 선 = 가장 가까운 직업 · ♥ Love끼리, ★ Well끼리 비교한 가까움(1에 가까울수록 비슷) · 끌어서 회전, 휠로 확대</p></div>' +
+    if (it.type === "embed3d") return head(it) + '<div class="e3"><div class="e3stage"><p class="e3cap">점 하나 = 직업 하나(미국 노동부 O*NET 923개, 색 = 직업군) · 노란 별 = 서윤 · 금빛 선 = 가장 가까운 직업 · ♥ Love끼리, ★ Well끼리 비교한 가까움(1에 가까울수록 비슷) · 점을 누르면 직업 이름 · 끌어서 회전 · 휠로 확대</p></div>' +
       '<div class="e3side"><div class="e3list"></div><div class="e3k"><span>가까운 직업</span>' + [3, 5, 10, 20].map(function (k) { return '<button data-k="' + k + '"' + (k === 5 ? ' class="on"' : '') + '>' + k + '개</button>'; }).join("") + '</div><div class="e3top"></div></div></div>' + chips(it.chips);
     if (it.type === "native") return NATIVE[it.key];
     if (it.type === "chain") {
@@ -149,16 +149,19 @@
       '<div class="lwp w"><b>★ Well · 잘하는 일</b>' + S.well.map(function (x) { return '<span class="wl">' + esc(x[0]) + '<i>' + x[1] + '%</i></span>'; }).join("") + '</div>';
     box.querySelectorAll(".e3k button").forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); K = +b.dataset.k; box.querySelectorAll(".e3k button").forEach(function (x) { x.classList.toggle("on", x === b); }); draw(); }); });
     if (!T) { stage.insertAdjacentHTML("beforeend", '<p class="e3cap">3D 그림을 불러오지 못했어요(인터넷 연결 확인).</p>'); }
-    var renderer, scene, cam, focus, me, meHalo, hi = [], gl = [], beams = [];
+    var gdot, renderer, scene, cam, focus, me, meHalo, hi = [], gl = [], beams = [];
     var target, want, yaw = 0.6, pitch = 0.28, dist = 300, wantDist = 210, drag = null, idle = 0;
     function glow(soft) { var c = document.createElement("canvas"); c.width = c.height = 128; var g = c.getContext("2d"); var r = g.createRadialGradient(64, 64, 0, 64, 64, 64);
       r.addColorStop(0, "rgba(255,255,255,1)"); r.addColorStop(soft ? 0.25 : 0.12, "rgba(255,255,255," + (soft ? 0.45 : 0.85) + ")"); r.addColorStop(1, "rgba(255,255,255,0)"); g.fillStyle = r; g.fillRect(0, 0, 128, 128); return new T.CanvasTexture(c); }
+    function starTex() { var c = document.createElement("canvas"); c.width = c.height = 128; var g = c.getContext("2d"); g.translate(64, 66); g.beginPath();
+      for (var i = 0; i < 10; i++) { var r = i % 2 ? 22 : 54, a = -Math.PI / 2 + i * Math.PI / 5; g.lineTo(r * Math.cos(a), r * Math.sin(a)); } g.closePath();
+      g.lineJoin = "round"; g.fillStyle = "#facc15"; g.fill(); g.lineWidth = 6; g.strokeStyle = "#fff7cc"; g.stroke(); return new T.CanvasTexture(c); }
     if (T) {
       target = new T.Vector3(); want = new T.Vector3();
       renderer = new T.WebGLRenderer({ antialias: true, alpha: true }); renderer.setClearColor(0x000000, 0); renderer.setPixelRatio(2);
       renderer.domElement.className = "e3gl"; stage.insertBefore(renderer.domElement, stage.firstChild);
       scene = new T.Scene(); scene.fog = new T.FogExp2(0x070b1d, 0.0022); cam = new T.PerspectiveCamera(50, 1, 1, 5000);
-      var dot = glow(false), haze = glow(true);
+      var dot = glow(false), haze = glow(true); gdot = dot;
       (function () { var n = 700, pos = new Float32Array(n * 3); for (var i = 0; i < n; i++) { var r = 900 + Math.random() * 600, th = Math.random() * 6.283, ph = Math.acos(2 * Math.random() - 1); pos[i*3] = r*Math.sin(ph)*Math.cos(th); pos[i*3+1] = r*Math.sin(ph)*Math.sin(th); pos[i*3+2] = r*Math.cos(ph); }
         var geo = new T.BufferGeometry(); geo.setAttribute("position", new T.BufferAttribute(pos, 3)); scene.add(new T.Points(geo, new T.PointsMaterial({ color: 0x8b95b8, size: 1.4, sizeAttenuation: false, transparent: true, opacity: .28, depthWrite: false, fog: false }))); })();
       var n = N.jobs.length, pos = new Float32Array(n * 3), col = new Float32Array(n * 3), siz = new Float32Array(n), alp = new Float32Array(n), cc = new T.Color(), gsum = {};
@@ -170,14 +173,22 @@
         fragmentShader: "varying vec3 vC; varying float vA; void main(){ vec2 uv = gl_PointCoord - vec2(0.5); float d = length(uv) * 2.0; if (d > 1.0) discard; float falloff = pow(max(0.0, 1.0 - d), 2.4); float core = smoothstep(0.3, 0.0, d); vec3 c = mix(vC, vec3(1.0), core * 0.45); gl_FragColor = vec4(c, min(falloff * vA, 0.85)); }" })));
       Object.keys(gsum).forEach(function (g) { var G = gsum[g]; if (G[3] < 25) return; var el = document.createElement("div"); el.className = "e3g"; el.textContent = N.groups[g] || g; el.style.color = gcol[g]; labels.appendChild(el); gl.push({ el: el, p: new T.Vector3(G[0]/G[3]*SC, G[1]/G[3]*SC, G[2]/G[3]*SC) }); });
       focus = new T.Group(); scene.add(focus);
-      me = new T.Sprite(new T.SpriteMaterial({ map: dot, color: 0xffffff, transparent: true, depthWrite: false, blending: T.AdditiveBlending })); me.scale.set(22, 22, 1); scene.add(me);
-      meHalo = new T.Sprite(new T.SpriteMaterial({ map: haze, color: 0xfbcfe8, transparent: true, opacity: .35, depthWrite: false, blending: T.AdditiveBlending })); meHalo.scale.set(80, 80, 1); scene.add(meHalo);
+      me = new T.Sprite(new T.SpriteMaterial({ map: starTex(), transparent: true, depthWrite: false, depthTest: false, sizeAttenuation: false })); me.scale.set(.034, .034, 1); me.renderOrder = 5; scene.add(me);
+      meHalo = new T.Sprite(new T.SpriteMaterial({ map: haze, color: 0xfde68a, transparent: true, opacity: .16, depthWrite: false, blending: T.AdditiveBlending })); meHalo.scale.set(.045, .045, 1); meHalo.material.sizeAttenuation = false; scene.add(meHalo);
       var sp = new T.Vector3(S.p[0]*SC, S.p[1]*SC, S.p[2]*SC); me.position.copy(sp); meHalo.position.copy(sp); want.copy(sp); target.copy(sp);
-      var mel = document.createElement("div"); mel.className = "e3me k-both"; mel.textContent = "서윤의 Love & Well"; labels.appendChild(mel); hi.push({ el: mel, p: sp, k: -1 });
+      var mel = document.createElement("div"); mel.className = "e3me"; mel.textContent = "서윤"; labels.appendChild(mel); hi.push({ el: mel, p: sp, k: -1 });
       var cv = renderer.domElement;
+      var rank = N.jobs.map(function (j, i) { return i; }).sort(function (a, b) { return (N.jobs[b].s || 0) - (N.jobs[a].s || 0); }), rk = {}; rank.forEach(function (i, r) { rk[i] = r + 1; });
+      var pick = null, pickSt = new T.Sprite(new T.SpriteMaterial({ map: dot, color: 0xffffff, transparent: true, depthWrite: false, blending: T.AdditiveBlending, sizeAttenuation: false })); pickSt.scale.set(0, 0, 1); scene.add(pickSt);
+      function choose(cx, cy) { var r = cv.getBoundingClientRect(), sx = cv.clientWidth / r.width, x = (cx - r.left) * sx, y = (cy - r.top) * sx, W = cv.clientWidth, H = cv.clientHeight, best = -1, bd = 18 * 18, v = new T.Vector3();
+        N.jobs.forEach(function (j, i) { v.set(j.p[0]*SC, j.p[1]*SC, j.p[2]*SC).project(cam); if (v.z > 1) return; var dx = (v.x + 1) / 2 * W - x, dy = (1 - v.y) / 2 * H - y, d2 = dx * dx + dy * dy; if (d2 < bd) { bd = d2; best = i; } });
+        if (pick) { pick.el.remove(); hi = hi.filter(function (h) { return h !== pick; }); pick = null; pickSt.scale.set(0, 0, 1); }
+        if (best < 0) return; var j = N.jobs[best], jp = new T.Vector3(j.p[0]*SC, j.p[1]*SC, j.p[2]*SC);
+        var el = document.createElement("div"); el.className = "e3j pk"; el.innerHTML = '<b>' + esc(j.n) + '</b>' + (j.s != null ? '<em>' + j.s.toFixed(2) + ' · ' + rk[best] + '위</em>' : '') + '<small>' + esc(N.groups[j.g] || "") + '</small>';
+        labels.appendChild(el); pick = { el: el, p: jp, k: 90, pick: true }; hi.push(pick); pickSt.position.copy(jp); pickSt.scale.set(.05, .05, 1); }
       cv.addEventListener("pointerdown", function (e) { e.stopPropagation(); drag = [e.clientX, e.clientY, yaw, pitch]; idle = performance.now(); cv.setPointerCapture(e.pointerId); });
       cv.addEventListener("pointermove", function (e) { if (!drag) return; yaw = drag[2] - (e.clientX - drag[0]) * 0.006; pitch = Math.max(-1.2, Math.min(1.2, drag[3] + (e.clientY - drag[1]) * 0.005)); });
-      cv.addEventListener("pointerup", function () { drag = null; }); cv.addEventListener("click", function (e) { e.stopPropagation(); });
+      cv.addEventListener("pointerup", function (e) { if (drag && Math.abs(e.clientX - drag[0]) + Math.abs(e.clientY - drag[1]) < 6) choose(e.clientX, e.clientY); drag = null; }); cv.addEventListener("click", function (e) { e.stopPropagation(); });
       cv.addEventListener("wheel", function (e) { e.preventDefault(); e.stopPropagation(); wantDist = Math.max(100, Math.min(600, wantDist * (e.deltaY > 0 ? 1.1 : 0.9))); }, { passive: false });
     }
     function draw() {
@@ -187,18 +198,20 @@
           (o.cn ? '<small>🇰🇷 커리어넷 ' + esc(o.cn.n) + (o.cn.deps.length ? ' · ' + o.cn.deps.map(function (d) { return esc(d[0]) + (d[1] ? '(' + d[1] + '개 대학)' : ''); }).join(", ") : '') + '</small>' : '') + '</div><em class="sc">' + o.s.toFixed(2) + '</em></div>'; }).join("");
       if (!T) return;
       while (focus.children.length) { var c = focus.children.pop(); if (c.geometry) c.geometry.dispose(); }
-      hi = hi.filter(function (h) { if (h.k >= 0) { h.el.remove(); return false; } return true; }); beams = [];
-      var dot = me.material.map, sp = me.position;
+      hi = hi.filter(function (h) { if (h.k >= 0 && !h.pick) { h.el.remove(); return false; } return true; }); beams = [];
+      var dot = gdot, sp = me.position;
       // 가까운 직업들이 화면에 적당히 크게 들어오도록: 학생 별 + 고른 직업들의 가운데로, 퍼진 정도에 맞춰 거리
       var cen = sp.clone(), pts = [sp.clone()];
       tops.forEach(function (o) { var j = N.jobs[o.i], v = new T.Vector3(j.p[0]*SC, j.p[1]*SC, j.p[2]*SC); cen.add(v); pts.push(v); });
       cen.multiplyScalar(1 / pts.length); var rad = 0; pts.forEach(function (v) { rad = Math.max(rad, v.distanceTo(cen)); });
-      want.copy(cen); wantDist = Math.max(80, Math.min(340, rad * 2.5 + 35));
+      want.copy(cen); wantDist = Math.max(70, Math.min(360, rad / Math.sin(cam ? cam.fov * Math.PI / 360 : 0.44) * 1.08 + 18));
       tops.forEach(function (o, q) { var j = N.jobs[o.i], jp = new T.Vector3(j.p[0]*SC, j.p[1]*SC, j.p[2]*SC);
         var ln = new T.Line(new T.BufferGeometry().setFromPoints([sp, jp]), new T.LineBasicMaterial({ color: 0xfde68a, transparent: true, opacity: 0, depthWrite: false, blending: T.AdditiveBlending })); focus.add(ln);
-        var st = new T.Sprite(new T.SpriteMaterial({ map: dot, color: new T.Color(gcol[j.g] || "#fde68a"), transparent: true, depthWrite: false, blending: T.AdditiveBlending })); st.position.copy(jp); st.scale.set(.1, .1, 1); focus.add(st);
+        var st = new T.Sprite(new T.SpriteMaterial({ map: dot, color: new T.Color(gcol[j.g] || "#fde68a"), transparent: true, depthWrite: false, blending: T.AdditiveBlending, sizeAttenuation: false })); st.position.copy(jp); st.scale.set(.1, .1, 1); focus.add(st);
         beams.push({ ln: ln, st: st, k: q, w: o.s });
-        if (q < 3) { var el = document.createElement("div"); el.className = "e3j r" + q; el.innerHTML = '<b>' + (q + 1) + '. ' + esc(j.n) + '</b><em>' + o.s.toFixed(2) + '</em>' + (o.cn ? '<small>🇰🇷 ' + esc(o.cn.n) + '</small>' : ''); labels.appendChild(el); hi.push({ el: el, p: jp, k: q }); } });
+        var el = document.createElement("div"); el.className = "e3j " + (q < 3 ? "r" + q : "rs");
+        el.innerHTML = q < 3 ? '<b>' + (q + 1) + '. ' + esc(j.n) + '</b><em>' + o.s.toFixed(2) + '</em>' + (o.cn ? '<small>🇰🇷 ' + esc(o.cn.n) + '</small>' : '') : '<b>' + (q + 1) + '. ' + esc(j.n) + '</b>';
+        labels.appendChild(el); hi.push({ el: el, p: jp, k: q }); });
     }
     function place(el, p, W, H, show) { var v = p.clone().project(cam); el.style.transform = "translate(" + ((v.x + 1) / 2 * W) + "px," + ((1 - v.y) / 2 * H) + "px)"; el.style.opacity = show && v.z < 1 ? "" : "0"; }
     function frame(now) {
@@ -209,12 +222,21 @@
       if (!drag && now - idle > 2500) yaw += 0.0018;
       target.lerp(want, 0.05); dist += (wantDist - dist) * 0.05;
       cam.position.set(target.x + dist * Math.cos(pitch) * Math.sin(yaw), target.y + dist * Math.sin(pitch), target.z + dist * Math.cos(pitch) * Math.cos(yaw)); cam.lookAt(target);
-      var tt = (now - t0) / 1000, br = 1 + 0.1 * Math.sin(now / 420); meHalo.scale.set(80 * br, 80 * br, 1);
+      var tt = (now - t0) / 1000;
       beams.forEach(function (bm) { var g = Math.max(0, Math.min(1, (tt - 0.4 - Math.min(bm.k, 8) * 0.15) / 0.7)), fade = bm.k < 5 ? 1 : .55;
-        bm.ln.material.opacity = g * fade * 0.7; var s2 = g * fade * 16; bm.st.scale.set(s2, s2, 1); });
+        bm.ln.material.opacity = g * fade * 0.7; var s2 = g * (bm.k < 3 ? .05 : .035) + .0001; bm.st.scale.set(s2, s2, 1); });
       renderer.render(scene, cam);
-      gl.forEach(function (x) { place(x.el, x.p, W, H, true); });
-      hi.forEach(function (h) { place(h.el, h.p, W, H, h.k < 0 || tt > 0.6 + h.k * 0.15); });
+      gl.forEach(function (x) { place(x.el, x.p, W, H, true); x.el.style.opacity = x.el.style.opacity === "0" ? "0" : (K > 5 ? ".25" : ".55"); });
+      var boxes = [];
+      hi.slice().sort(function (a, b) { return a.k - b.k; }).forEach(function (h) {
+        var v = h.p.clone().project(cam), show = (h.k < 0 || h.pick || tt > 0.6 + Math.min(h.k, 8) * 0.15) && v.z < 1;
+        var w = h.w || (h.w = h.el.offsetWidth), hh = h.hh || (h.hh = h.el.offsetHeight);
+        var x = (v.x + 1) / 2 * W, y = (1 - v.y) / 2 * H, lx = h.k < 0 ? x - w / 2 : x + 12, ly = h.k < 0 ? y - hh - 9 : y - hh / 2;
+        if (h.k >= 0) for (var tries = 0; tries < 14; tries++) { var hit = boxes.filter(function (b) { return lx < b[2] && lx + w > b[0] && ly < b[3] && ly + hh > b[1]; })[0];
+          if (!hit) break; ly = (tries % 2 ? hit[1] - hh - 3 : hit[3] + 3); if (tries > 5) lx = hit[2] + 4; }
+        lx = Math.max(6, Math.min(W - w - 6, lx)); ly = Math.max(6, Math.min(H - hh - 70, ly));
+        if (show) boxes.push([lx, ly, lx + w, ly + hh]);
+        h.el.style.transform = "translate(" + lx + "px," + ly + "px)"; h.el.style.opacity = show ? "" : "0"; });
     }
     draw(); if (T) requestAnimationFrame(frame);
   });
