@@ -51,13 +51,13 @@
         return '<div class="fsn ' + st + '" style="left:' + n[0] + 'px;top:' + n[1] + 'px"><i>' + n[2] + '</i><b>' + esc(n[3]) + '</b><small>' + esc(n[4]) + '</small></div>'; }).join("");
       var tok = '<div class="fstok" style="animation-name:' + uid + '"><span>' + esc(it.tok) + '</span></div>';
       if (k === 0) { var st2 = SQ.concat(["discover"]), n2 = st2.length - 1;
-        css += '@keyframes ' + uid + '{' + st2.map(function (id, q) { var N2 = NN[id]; return (q / n2 * 100).toFixed(1) + '%{left:' + N2[0] + 'px;top:' + N2[1] + 'px}'; }).join("") + '}';
+        css += '@keyframes ' + uid + '{' + st2.map(function (id, q) { var N2 = NN[id]; return (q / n2 * 100).toFixed(1) + '%{left:' + N2[0] + 'px;top:' + (N2[1] - 46) + 'px}'; }).join("") + '}';
         tok = '<div class="fstok loop" style="animation-name:' + uid + '"><span>' + esc(it.tok) + '</span></div>';
-      } else { var A0 = NN[SQ[k - 1]], A1 = NN[SQ[k]]; css += '@keyframes ' + uid + '{0%{left:' + A0[0] + 'px;top:' + A0[1] + 'px}100%{left:' + A1[0] + 'px;top:' + A1[1] + 'px}}'; }
-      if (it.branch) { var B0 = NN[it.branch[0]], B1 = NN[it.branch[1]]; css += '@keyframes ' + uid + 'b{0%{left:' + B0[0] + 'px;top:' + B0[1] + 'px;opacity:0}20%{opacity:1}100%{left:' + B1[0] + 'px;top:' + B1[1] + 'px;opacity:1}}';
+      } else { var A0 = NN[SQ[k - 1]], A1 = NN[SQ[k]]; css += '@keyframes ' + uid + '{0%{left:' + A0[0] + 'px;top:' + (A0[1] - 46) + 'px}100%{left:' + A1[0] + 'px;top:' + (A1[1] - 46) + 'px}}'; }
+      if (it.branch) { var B0 = NN[it.branch[0]], B1 = NN[it.branch[1]]; css += '@keyframes ' + uid + 'b{0%{left:' + B0[0] + 'px;top:' + (B0[1] - 46) + 'px;opacity:0}20%{opacity:1}100%{left:' + B1[0] + 'px;top:' + (B1[1] - 46) + 'px;opacity:1}}';
         tok += '<div class="fstok br" style="animation-name:' + uid + 'b"><span>' + esc(it.branch[2]) + '</span></div>'; }
-      var rc = it.rec, recHTML = '<div class="frcol"><div class="faha"><span>💡</span><p>' + esc(it.aha) + '</p></div><div class="frec"><div class="frh"><span>📋</span><div><b>' + esc(rc.title) + '</b><small>' + esc(rc.svc) + '</small></div></div><div class="fthr">🧵 ' + esc(it.thread) + '</div><dl>' +
-        rc.fields.map(function (f, q) { return '<div class="frf' + (f[2] ? ' new' : '') + '" style="--q:' + q + '"><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + (f[2] ? '<em>새로</em>' : '') + '</dd></div>'; }).join("") + '</dl>' + (rc.foot ? '<p class="frfoot">' + esc(rc.foot) + '</p>' : '') + '</div></div>';
+      var rc = it.rec, recHTML = '<div class="frcol"><div class="faha"><span>💡</span><p>' + esc(it.aha) + '</p></div><div class="frec"><div class="frh"><span>📋</span><div><b>' + esc(rc.title) + '</b><small>' + esc(rc.svc) + '</small></div></div><dl>' +
+        rc.fields.map(function (f, q) { return '<div class="frf' + (f[2] ? ' new' : '') + '" style="--q:' + q + '"><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '' + '</dd></div>'; }).join("") + '</dl>' + (rc.foot ? '<p class="frfoot">' + esc(rc.foot) + '</p>' : '') + '</div></div>';
       return '<style>' + css + '</style><div class="phead">' + esc(it.head) + '</div><div class="fsrow2"><div class="fsbox" style="width:' + BX[0] + 'px;height:' + BX[1] + 'px">' + svg + nodesHTML + tok + '</div>' + recHTML + '</div>';
     }
     if (it.type === "journey") {

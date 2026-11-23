@@ -427,3 +427,12 @@ body{background:#e9edf5}
 #sMsg .link.step.in > :nth-child(1),#sMsg .link.step.in > :nth-child(2){transition-delay:.15s}
 #sMsg .link.step.in > :nth-child(3),#sMsg .link.step.in > :nth-child(4){transition-delay:1.1s;transform:none}
 #sMsg .link.step > :nth-child(3),#sMsg .link.step > :nth-child(4){transform:translateX(10px)}
+/* 4장 다듬기: 앞으로 갈 정거장도 또렷하게, 데이터 조각은 정거장 위에 */
+#sMap .fsn.later{opacity:1;background:#fff;border-color:#e2e8f0}
+#sMap .fsn.later b{color:#334155}
+#sMap .fsn.dim{opacity:.7}
+#sMap .fsn.visited{border-color:#fcd34d;background:#fffbeb}
+#sMap .fstok span{top:-58px}
+#sMap .fstok::before{left:-11px;top:-11px;width:22px;height:22px}
+#sMap .fse.future{stroke:#cbd5e1}
+#sMap .frf.new dd{background:linear-gradient(transparent 60%,#fef08a 60%)}
