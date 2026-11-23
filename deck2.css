@@ -518,3 +518,8 @@ body{background:#e9edf5}
 /* 고민 장: 실제 말투 인용, 말풍선 크기 고르게 */
 #s2 .bubble{font-size:24px;line-height:1.55;min-height:270px;padding:22px 16px;word-break:keep-all}
 #s2 .role{min-height:600px}
+/* 이름표 ↔ 점 연결선 */
+.e3labels > svg.e3leads{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;transform:none !important;opacity:1 !important}
+.e3leads path{fill:none;stroke:rgba(253,230,138,.75);stroke-width:1.4}
+.e3labels>div{transition:opacity .5s}
+.e3.many .e3j.rs{font-size:13px;padding:1px 6px}

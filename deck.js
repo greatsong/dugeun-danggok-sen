@@ -140,6 +140,7 @@
     var N = window.LWN, T = window.THREE; if (!N) return;
     var stage = box.querySelector(".e3stage"), side = box.querySelector(".e3side"), top = box.querySelector(".e3top");
     var labels = document.createElement("div"); labels.className = "e3labels"; stage.appendChild(labels);
+    var leads = document.createElementNS("http://www.w3.org/2000/svg", "svg"); leads.setAttribute("class", "e3leads"); labels.appendChild(leads);
     var PAL = ["#F87171","#60A5FA","#818CF8","#4ADE80","#FACC15","#FB923C","#22D3EE","#C084FC","#2DD4BF","#A3E635","#A78BFA","#F472B6","#38BDF8","#34D399","#E879F9","#BEF264","#FB7185","#FDE047","#93C5FD","#F9A8D4","#86EFAC","#FCA5A5","#CBD5E1"];
     var gcol = {}; Object.keys(N.groups).forEach(function (g, i) { gcol[g] = PAL[i % PAL.length]; });
     var SC = 100, K = 5, S = N.student, t0 = performance.now();
@@ -192,7 +193,7 @@
       cv.addEventListener("wheel", function (e) { e.preventDefault(); e.stopPropagation(); wantDist = Math.max(100, Math.min(600, wantDist * (e.deltaY > 0 ? 1.1 : 0.9))); }, { passive: false });
     }
     function draw() {
-      t0 = performance.now(); var tops = S.top.slice(0, K);
+      t0 = performance.now(); var tops = S.top.slice(0, K); box.classList.toggle("many", K > 10);
       top.innerHTML = '<p class="e3h">가장 가까운 직업 ' + K + '개</p>' + tops.map(function (o, q) { var j = N.jobs[o.i];
         return '<div class="lwj"><span>' + (q + 1) + '</span><div><b>' + esc(j.n) + '</b><div class="bars"><i class="l" style="width:' + Math.round(o.l * 100) + '%"></i><em>♥ ' + o.l.toFixed(2) + '</em><i class="w" style="width:' + Math.round(o.w * 100) + '%"></i><em>★ ' + o.w.toFixed(2) + '</em></div>' +
           (o.cn ? '<small>🇰🇷 커리어넷 ' + esc(o.cn.n) + (o.cn.deps.length ? ' · ' + o.cn.deps.map(function (d) { return esc(d[0]) + (d[1] ? '(' + d[1] + '개 대학)' : ''); }).join(", ") : '') + '</small>' : '') + '</div><em class="sc">' + o.s.toFixed(2) + '</em></div>'; }).join("");
@@ -227,16 +228,29 @@
         bm.ln.material.opacity = g * fade * 0.7; var s2 = g * (bm.k < 3 ? .05 : .035) + .0001; bm.st.scale.set(s2, s2, 1); });
       renderer.render(scene, cam);
       gl.forEach(function (x) { place(x.el, x.p, W, H, true); x.el.style.opacity = x.el.style.opacity === "0" ? "0" : (K > 5 ? ".25" : ".55"); });
-      var boxes = [];
+      var boxes = [], lines = "";
+      // 점 자리를 먼저 막아 두어 이름표가 다른 점을 덮지 않게
+      hi.forEach(function (h) { var v = h.p.clone().project(cam); if (v.z < 1) { var x = (v.x + 1) / 2 * W, y = (1 - v.y) / 2 * H; boxes.push([x - 6, y - 6, x + 6, y + 6]); } });
       hi.slice().sort(function (a, b) { return a.k - b.k; }).forEach(function (h) {
         var v = h.p.clone().project(cam), show = (h.k < 0 || h.pick || tt > 0.6 + Math.min(h.k, 8) * 0.15) && v.z < 1;
-        var w = h.w || (h.w = h.el.offsetWidth), hh = h.hh || (h.hh = h.el.offsetHeight);
-        var x = (v.x + 1) / 2 * W, y = (1 - v.y) / 2 * H, lx = h.k < 0 ? x - w / 2 : x + 12, ly = h.k < 0 ? y - hh - 9 : y - hh / 2;
-        if (h.k >= 0) for (var tries = 0; tries < 14; tries++) { var hit = boxes.filter(function (b) { return lx < b[2] && lx + w > b[0] && ly < b[3] && ly + hh > b[1]; })[0];
-          if (!hit) break; ly = (tries % 2 ? hit[1] - hh - 3 : hit[3] + 3); if (tries > 5) lx = hit[2] + 4; }
-        lx = Math.max(6, Math.min(W - w - 6, lx)); ly = Math.max(6, Math.min(H - hh - 70, ly));
-        if (show) boxes.push([lx, ly, lx + w, ly + hh]);
-        h.el.style.transform = "translate(" + lx + "px," + ly + "px)"; h.el.style.opacity = show ? "" : "0"; });
+        var w = h.el.offsetWidth, hh = h.el.offsetHeight, x = (v.x + 1) / 2 * W, y = (1 - v.y) / 2 * H, lx, ly;
+        if (h.k < 0) { lx = x - w / 2; ly = y - hh - 12; }
+        else {
+          // 점 바로 오른쪽 → 왼쪽 → 위 → 아래 → 조금씩 멀리. 처음 빈자리에 둔다.
+          var cand = [[x + 10, y - hh / 2], [x - 10 - w, y - hh / 2], [x - w / 2, y - hh - 10], [x - w / 2, y + 10]];
+          for (var r = 1; r <= 6; r++) { var d = r * (hh + 4); cand.push([x + 10, y - hh / 2 - d], [x + 10, y - hh / 2 + d], [x - 10 - w, y - hh / 2 - d], [x - 10 - w, y - hh / 2 + d]); }
+          var pickc = cand[0], order = cand.map(function (_, c) { return c; });
+          if (h.ci != null) { order.splice(h.ci, 1); order.unshift(h.ci); }   // 지난번 자리를 먼저 → 돌려도 이름표가 덜 튐
+          for (var oc = 0; oc < order.length; oc++) { var c = order[oc]; var cx = Math.max(6, Math.min(W - w - 6, cand[c][0])), cy = Math.max(6, Math.min(H - hh - 70, cand[c][1]));
+            if (!boxes.some(function (b) { return cx < b[2] && cx + w > b[0] && cy < b[3] && cy + hh > b[1]; })) { pickc = [cx, cy]; h.ci = c; break; } }
+          lx = Math.max(6, Math.min(W - w - 6, pickc[0])); ly = Math.max(6, Math.min(H - hh - 70, pickc[1]));
+          // 점에서 떨어져 놓였으면 가는 선으로 잇기
+          var ex = Math.max(lx, Math.min(lx + w, x)), ey = Math.max(ly, Math.min(ly + hh, y));
+          if (show && Math.hypot(ex - x, ey - y) > 14) lines += "M" + x.toFixed(1) + " " + y.toFixed(1) + "L" + ex.toFixed(1) + " " + ey.toFixed(1);
+        }
+        if (show) boxes.push([lx - 2, ly - 2, lx + w + 2, ly + hh + 2]);
+        h.el.style.transform = "translate(" + lx.toFixed(1) + "px," + ly.toFixed(1) + "px)"; h.el.style.opacity = show ? "" : "0"; });
+      leads.innerHTML = lines ? '<path d="' + lines + '"/>' : "";
     }
     draw(); if (T) requestAnimationFrame(frame);
   });
