@@ -436,3 +436,21 @@ body{background:#e9edf5}
 #sMap .fstok::before{left:-11px;top:-11px;width:22px;height:22px}
 #sMap .fse.future{stroke:#cbd5e1}
 #sMap .frf.new dd{background:linear-gradient(transparent 60%,#fef08a 60%)}
+/* 직업 성운: 학생 Love & Well 프로필 + 가까운 직업 */
+.e3side{gap:10px}
+.e3list{max-height:none;overflow:visible}
+.lwp{background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px 12px;display:flex;flex-wrap:wrap;gap:5px}
+.lwp b{width:100%;font-size:15px;font-weight:900;color:#be185d}
+.lwp.w b{color:#a16207}
+.lwp span{font-size:13px;font-weight:700;padding:2px 8px;border-radius:999px;background:#fdf2f8;color:#831843}
+.lwp.w span{background:#fefce8;color:#713f12}
+.lwp span i{font-style:normal;margin-left:4px;opacity:.7}
+.e3top{max-height:420px;overflow:auto}
+.lwj{display:grid;grid-template-columns:26px 1fr auto;gap:8px;align-items:start;padding:6px 0;border-bottom:1px dashed #fde68a}
+.lwj > span{width:24px;height:24px;border-radius:50%;background:var(--orange);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:850;margin-top:2px}
+.lwj b{font-size:18px;font-weight:850}
+.lwj .bars{display:grid;grid-template-columns:1fr auto;gap:2px 6px;align-items:center;margin-top:3px}
+.lwj .bars i{height:6px;border-radius:3px;display:block}.lwj .bars i.l{background:#f472b6}.lwj .bars i.w{background:#facc15}
+.lwj .bars em{font-style:normal;font-size:12px;font-weight:800;color:var(--sub)}
+.lwj small{display:block;font-size:13px;font-weight:700;color:#1d4ed8;margin-top:3px}
+.lwj .sc{font-style:normal;font-weight:900;color:var(--orange);font-size:18px}
