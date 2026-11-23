@@ -515,3 +515,6 @@ body{background:#e9edf5}
 .e3j.pk{background:#fff;color:#0f172a;border:2px solid #facc15;font-size:17px;padding:4px 10px;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.4);z-index:3}
 .e3j.pk em{color:#b45309}.e3j.pk small{color:#475569}
 .e3stage canvas.e3gl{cursor:pointer}
+/* 고민 장: 실제 말투 인용, 말풍선 크기 고르게 */
+#s2 .bubble{font-size:24px;line-height:1.55;min-height:270px;padding:22px 16px;word-break:keep-all}
+#s2 .role{min-height:600px}
