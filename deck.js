@@ -21,7 +21,7 @@
   }
   function paneHTML(it) {
     if (it.type === "shot") return head(it) + '<div class="shotbox" data-lb="' + it.img + '" data-cap="' + esc(it.head) + '"><img src="' + it.img + '" alt="' + esc(it.head) + '"></div>' + chips(it.chips);
-    if (it.type === "doc") return head(it) + '<div class="docbox" data-lb="' + it.img + '" data-cap="' + esc(it.head) + '" style="--dw:' + (it.dw || 820) + 'px"><img src="' + it.img + '" alt=""></div>' + chips(it.chips);
+    if (it.type === "doc") return head(it) + '<div class="docbox" data-lb="' + it.img + '" data-cap="' + esc(it.head) + '" style="--dw:' + (it.dw || 820) + 'px' + (it.pan ? ';--pan:' + it.pan + 'px' : '') + (it.pd ? ';--pd:' + it.pd + 's' : '') + '"><img src="' + it.img + '" alt=""></div>' + chips(it.chips);
     if (it.type === "text") return head(it) + '<div class="textbox"><div class="lab">' + esc(it.lab) + '<small>' + esc(it.labsmall) + '</small></div><p' + (it.text2 ? ' style="font-size:24px"' : '') + '>' + it.text + '</p>' +
       (it.text2 ? '<div class="lab" style="margin-top:18px;color:var(--green)">' + esc(it.lab2) + '<small>' + esc(it.lab2small) + '</small></div><p style="font-size:24px">' + esc(it.text2) + '</p>' : '') + '</div>' + chips(it.chips);
     if (it.type === "q") return head(it) + '<div class="qbox"><div class="qcard"><small>' + esc(it.q.small) + '</small>' + esc(it.q.text) + '<span class="k">' + esc(it.q.k) + '</span></div><div class="bubbles">' +
