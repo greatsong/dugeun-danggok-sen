@@ -65,10 +65,12 @@
   }
   // 손으로 그린 동그라미(살짝 겹쳐 닫힘)
   function ringPath(cx, cy, rx, ry, seed) {
-    var rnd = seeded(seed || 3), d = "", n = 44, a0 = -2.5 + rnd() * 0.6, turn = Math.PI * 2 * 1.13;
+    // 손으로 그린 듯한 둥근 타원: 살짝 기울고, 끝이 시작점을 조금 지나 겹침(뾰족한 꼬리 없이)
+    var rnd = seeded(seed || 3), d = "", n = 64, a0 = -2.2 + rnd() * 0.4, turn = Math.PI * 2 * 1.07, tilt = (rnd() - 0.5) * 0.12, ph = rnd() * 6;
     for (var i = 0; i <= n; i++) {
-      var t = i / n, a = a0 + turn * t, wob = 1 + 0.05 * Math.sin(i * 0.9 + rnd()) + t * 0.07;
-      d += (i ? "L" : "M") + (cx + rx * wob * Math.cos(a)).toFixed(1) + "," + (cy + ry * wob * Math.sin(a) - t * 3).toFixed(1);
+      var t = i / n, a = a0 + turn * t, wob = 1 + 0.025 * Math.sin(a * 2 + ph) + 0.05 * Math.max(0, t - 0.9) / 0.1;
+      var x = rx * wob * Math.cos(a), y = ry * wob * Math.sin(a);
+      d += (i ? "L" : "M") + (cx + x * Math.cos(tilt) - y * Math.sin(tilt)).toFixed(1) + "," + (cy + x * Math.sin(tilt) + y * Math.cos(tilt)).toFixed(1);
     }
     return d;
   }
@@ -129,8 +131,8 @@
       if (!mini) {
         var how = mk("div", "pd-how");
         how.innerHTML = front
-          ? "<b>대상보다 장면으로</b> 적어요 · <b>좋아함 %</b> = 우리 반 친구들과 비교해 상위 몇 %일지 동그라미"
-          : "<b>해 봤고 잘한다고 느낀 장면</b> · <b>잘함 %</b>에 동그라미 · 근거 장면이 있으면 짧게";
+          ? "<b>대상보다 구체적인 활동으로</b> 적어요 · <b>좋아함 %</b> = 우리 반 친구들과 비교해 상위 몇 %일지 동그라미"
+          : "<b>해 봤고 잘한다고 느낀 것</b> · <b>잘함 %</b>에 동그라미 · 근거가 있으면 짧게";
         face.appendChild(how);
       }
       var list = front ? D.love : D.well, nrows = mini ? (front ? Math.max(8, list.length) : Math.max(6, list.length)) : (front ? 8 : 6);
@@ -138,8 +140,8 @@
       var tbl = mk("div", "pd-tbl");
       tbl.style.gridTemplateColumns = cols;
       var rowH = mini ? (front ? 50 : 54) : (front ? 46 : 52);
-      var ths = mini ? ["", front ? "좋아하는 장면" : "잘하는 장면", "%"]
-        : (front ? ["", "좋아하는 장면", "좋아함 %(상위)"] : ["", "잘하는 장면", "잘함 %(상위)", "근거 장면"]);
+      var ths = mini ? ["", front ? "좋아하는 것" : "잘하는 것", "%"]
+        : (front ? ["", "좋아하는 것", "좋아함 %(상위)"] : ["", "잘하는 것", "잘함 %(상위)", "근거"]);
       ths.forEach(function (t) { tbl.appendChild(mk("div", "pd-th", t)); });
       for (var i = 0; i < nrows; i++) {
         var it = list[i], row = { cells: [] };
@@ -181,7 +183,7 @@
           var tick = mk("span", "pd-tick", "✓");
           t.appendChild(tick);
           if (!front && it[2]) {
-            // 작은 종이: 근거는 장면 아래 둘째 줄
+            // 작은 종이: 근거는 본문 아래 둘째 줄
             t.style.flexDirection = "column"; t.style.alignItems = "flex-start"; t.style.justifyContent = "center";
             row.basis = hw("근거: " + it[2], 520 + i, filled);
             row.basis.style.fontSize = "24px"; row.basis.style.marginTop = "2px"; row.basis.style.color = "#3b4f8f";
@@ -220,7 +222,7 @@
       if (sp.parentNode !== pc) { // 손글씨 % (작은 종이)
         cx = sp.offsetLeft + sp.offsetWidth / 2; cy = pc.offsetHeight / 2;
       }
-      var rx = Math.max(19, sp.offsetWidth / 2 + 10), ry = Math.min(pc.offsetHeight / 2 - 4, 18);
+      var rx = Math.max(22, sp.offsetWidth / 2 + 14), ry = Math.min(pc.offsetHeight / 2 - 3, 17);
       row.ring.setAttribute("d", ringPath(cx, cy, rx, ry, seed));
       if (instant) row.ring.setAttribute("class", "done");
     }
@@ -281,7 +283,7 @@
       sd.step(0);
       var total = 0;
       function count(kind) { total++; sd.cnt.innerHTML = kind + " <b>" + total + "</b>줄 적음"; }
-      sd.cnt.innerHTML = "좋아하는 장면 <b>0</b>줄 적음";
+      sd.cnt.innerHTML = "좋아하는 것 <b>0</b>줄 적음";
       await sleep(350);
       penAt(sh.front.name.children[0], false);
       await sleep(250);
@@ -297,7 +299,7 @@
         await write(rows[i].text, 62);
         await sleep(160);
         await circle(rows[i], 40 + i);
-        count("좋아하는 장면");
+        count("좋아하는 것");
         await sleep(200);
       }
       if (sh.front.less) {
@@ -308,7 +310,7 @@
       await sleep(700);
       sh.card.classList.add("pd-flipped", "pd-lift");
       sd.step(1);
-      total = 0; sd.cnt.innerHTML = "잘하는 장면 <b>0</b>줄 적음";
+      total = 0; sd.cnt.innerHTML = "잘하는 것 <b>0</b>줄 적음";
       await sleep(1500);
       pen.classList.add("on");
       var br = sh.back.rows;
@@ -323,7 +325,7 @@
           penAt(br[j].basis.children[0], false); await sleep(200);
           await write(br[j].basis, 58);
         }
-        count("잘하는 장면");
+        count("잘하는 것");
         await sleep(220);
       }
       if (sh.back.less) {
@@ -360,7 +362,7 @@
       btn.type = "button"; save.appendChild(st); save.appendChild(btn); p.appendChild(save);
       var toast = mk("div", "pd-toast"); toast.innerHTML = "<b>✓</b>저장했어요."; p.appendChild(toast);
       root.appendChild(p);
-      var PH = ["좋아하는 장면 한 줄", "잘하는 장면 한 줄", "덜 좋아하는 장면", "아직 서툰 장면"];
+      var PH = ["좋아하는 것 한 줄", "잘하는 것 한 줄", "덜 좋아하는 것", "아직 서툰 것"];
       var api = {
         el: p, inp: inp, list: list, btn: btn, st: st, toast: toast, tab: 0, items: [],
         setInp: function (box, text, cursor, ph) {
