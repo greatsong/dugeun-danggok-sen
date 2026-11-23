@@ -421,14 +421,14 @@
       root.appendChild(mini.el);
       mini.front.rows.concat(mini.back.rows).forEach(function (r, k) { drawRing(r, 200 + k, true); });
       var ph = phone(578, 10);
-      var sd = side(1018, 24, 420, ["종이에 쓴 줄 옮겨 적기", "저장하기", "네 칸으로 나뉘어요"]);
+      var sd = side(1018, 24, 420, ["종이에 쓴 줄 옮겨 적기", "저장하기", "네 칸으로 정리"]);
       sd.step(0);
       var total = D.love.length + D.lessLove.length + D.well.length + D.lessWell.length, moved = 0;
       function cnt() { sd.cnt.innerHTML = "옮긴 줄 <b>" + moved + "</b> / " + total; }
       cnt();
       // 네 칸 판(처음엔 숨김, 자리만 잡아 둠)
       var board = mk("div", "pd-board"), bh = mk("div", "pd-bhead");
-      bh.innerHTML = "<b>나를 발견하기</b><span>좋아함 × 잘함 — 옮겨 적은 줄이 네 칸으로 나뉘어요</span>";
+      bh.innerHTML = "<b>나를 발견하기</b><span>좋아함 × 잘함 — 옮겨 적은 줄을 네 칸으로 정리</span>";
       board.appendChild(bh);
       var grid = mk("div", "pd-grid"), slots = {};
       D.quads.forEach(function (q) {
