@@ -36,6 +36,47 @@
       it.story.map(function (r, k) { return '<a class="ss-fig" style="--k:' + k + '" href="' + r[4] + '" target="_blank" rel="noopener"><img src="' + r[2] + '" alt="' + esc(r[3]) + '"><span class="cap"><b>' + esc(r[3]) + '</b><u>' + esc(r[4].replace("https://", "")) + ' ↗</u></span></a>'; }).join("") + '</div></div>' + chips(it.chips);
     if (it.type === "iframe") return head(it) + '<div class="ifbox"><iframe src="' + it.src + '" title="' + esc(it.head) + '" loading="lazy"></iframe></div>' + chips(it.chips);
     if (it.type === "paperdemo") return head(it) + '<div class="pdhost" data-mode="' + it.mode + '"></div>' + chips(it.chips);
+    if (it.type === "flowstep") {
+      var MM = MENUS.map, NN = MM.nodes, SQ = MM.seq, k = it.k, uid = "fs" + k, css = "";
+      var nodeAt = function (id) { return NN[id]; };
+      var BX = MM.box || [1310, 500], svg = '<svg viewBox="0 0 ' + BX[0] + ' ' + BX[1] + '" class="fssvg"><defs><marker id="fa' + k + '" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="context-stroke"/></marker></defs>';
+      function edge(a, b, cls, label) { var A = nodeAt(a), B = nodeAt(b), mx = (A[0] + B[0]) / 2, my = (A[1] + B[1]) / 2;
+        return '<polyline class="fse ' + cls + '" points="' + A[0] + ',' + A[1] + ' ' + mx + ',' + my + ' ' + B[0] + ',' + B[1] + '" marker-mid="url(#fa' + k + ')"/>' + (label ? '<text class="fsel" x="' + mx + '" y="' + (my - 14) + '" text-anchor="middle">' + esc(label) + '</text>' : ''); }
+      for (var i = 0; i < SQ.length - 1; i++) svg += edge(SQ[i], SQ[i + 1], k === 0 ? "all" : (i < k - 1 ? "done" : (i === k - 1 ? "cur" : "future")));
+      var last = SQ.length - 1; svg += edge(SQ[last], SQ[1], (k === 0 || k === last) ? "loop" : "future", (k === 0 || k === last) ? "다음 학기" : "");
+      if (it.branch) svg += edge(it.branch[0], it.branch[1], "branch");
+      svg += '</svg>';
+      var nodesHTML = Object.keys(NN).map(function (id) { var n = NN[id], si = SQ.indexOf(id), side = si < 0;
+        var st = (k === 0) ? (side ? "dim" : "on") : (id === SQ[k] ? "active" : (it.branch && id === it.branch[1] ? "active br" : (!side && si < k ? "visited" : (side ? "dim" : "later"))));
+        return '<div class="fsn ' + st + '" style="left:' + n[0] + 'px;top:' + n[1] + 'px"><i>' + n[2] + '</i><b>' + esc(n[3]) + '</b><small>' + esc(n[4]) + '</small></div>'; }).join("");
+      var tok = '<div class="fstok" style="animation-name:' + uid + '"><span>' + esc(it.tok) + '</span></div>';
+      if (k === 0) { var st2 = SQ.concat(["discover"]), n2 = st2.length - 1;
+        css += '@keyframes ' + uid + '{' + st2.map(function (id, q) { var N2 = NN[id]; return (q / n2 * 100).toFixed(1) + '%{left:' + N2[0] + 'px;top:' + N2[1] + 'px}'; }).join("") + '}';
+        tok = '<div class="fstok loop" style="animation-name:' + uid + '"><span>' + esc(it.tok) + '</span></div>';
+      } else { var A0 = NN[SQ[k - 1]], A1 = NN[SQ[k]]; css += '@keyframes ' + uid + '{0%{left:' + A0[0] + 'px;top:' + A0[1] + 'px}100%{left:' + A1[0] + 'px;top:' + A1[1] + 'px}}'; }
+      if (it.branch) { var B0 = NN[it.branch[0]], B1 = NN[it.branch[1]]; css += '@keyframes ' + uid + 'b{0%{left:' + B0[0] + 'px;top:' + B0[1] + 'px;opacity:0}20%{opacity:1}100%{left:' + B1[0] + 'px;top:' + B1[1] + 'px;opacity:1}}';
+        tok += '<div class="fstok br" style="animation-name:' + uid + 'b"><span>' + esc(it.branch[2]) + '</span></div>'; }
+      var rc = it.rec, recHTML = '<div class="frcol"><div class="faha"><span>💡</span><p>' + esc(it.aha) + '</p></div><div class="frec"><div class="frh"><span>📋</span><div><b>' + esc(rc.title) + '</b><small>' + esc(rc.svc) + '</small></div></div><div class="fthr">🧵 ' + esc(it.thread) + '</div><dl>' +
+        rc.fields.map(function (f, q) { return '<div class="frf' + (f[2] ? ' new' : '') + '" style="--q:' + q + '"><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + (f[2] ? '<em>새로</em>' : '') + '</dd></div>'; }).join("") + '</dl>' + (rc.foot ? '<p class="frfoot">' + esc(rc.foot) + '</p>' : '') + '</div></div>';
+      return '<style>' + css + '</style><div class="phead">' + esc(it.head) + '</div><div class="fsrow2"><div class="fsbox" style="width:' + BX[0] + 'px;height:' + BX[1] + 'px">' + svg + nodesHTML + tok + '</div>' + recHTML + '</div>';
+    }
+    if (it.type === "journey") {
+      var z = it.z[2], F = 50 / z, svg = '<svg viewBox="0 0 2000 1334" class="jsvg">';
+      it.routes.forEach(function (r, k) {
+        var col = r.side ? "#8b5cf6" : "#f59e0b", w = (r.side ? 7 : 10) / z, tw = Math.round(r.tok.length * F * 0.92 + F * 1.2), begin = r.side ? (it.routes[0].dur * 0.6) + "s" : "0.6s";
+        svg += '<path d="' + r.d + '" fill="none" stroke="' + col + '" stroke-width="' + w + '" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="' + (r.side ? 18 / z + " " + 14 / z : "none") + '" opacity=".85" class="jline"/>';
+        svg += '<g class="jtok' + (r.side ? " side" : "") + '"><circle r="' + 16 / z + '" fill="' + (r.side ? "#c4b5fd" : "#fde047") + '" stroke="#fff" stroke-width="' + 5 / z + '"/>' +
+          '<g transform="translate(' + 22 / z + ',' + (-F * 1.55) + ')"><rect width="' + tw + '" height="' + F * 1.5 + '" rx="' + F * 0.45 + '" fill="' + (r.side ? "#5b21b6" : "#1e293b") + '" opacity=".92"/><text x="' + F * 0.6 + '" y="' + F * 1.04 + '" font-size="' + F + '" font-weight="800" fill="#fff">' + esc(r.tok) + '</text></g>' +
+          '<animateMotion dur="' + r.dur + 's" begin="' + begin + '" repeatCount="indefinite" path="' + r.d + '" keyPoints="0;1;1" keyTimes="0;0.8;1" calcMode="linear"/></g>';
+      });
+      it.pins.forEach(function (p) {
+        var tw2 = Math.round(p[2].length * F * 0.95 + F);
+        svg += '<g transform="translate(' + p[0] + ',' + p[1] + ')"><circle r="' + 13 / z + '" fill="#ef4444" stroke="#fff" stroke-width="' + 4 / z + '"/><g transform="translate(' + (-tw2 / 2) + ',' + (F * 0.7) + ')"><rect width="' + tw2 + '" height="' + F * 1.35 + '" rx="' + F * 0.4 + '" fill="#fff" stroke="#ef4444" stroke-width="' + 3 / z + '"/><text x="' + tw2 / 2 + '" y="' + F * 0.98 + '" text-anchor="middle" font-size="' + F * 0.9 + '" font-weight="850" fill="#b91c1c">' + esc(p[2]) + '</text></g></g>';
+      });
+      svg += '</svg>';
+      return '<div class="phead">' + esc(it.head) + '</div><div class="mzrow"><div class="mzwrap"><div class="mzbox jbox" style="--cx:' + it.z[0] + '%;--cy:' + it.z[1] + '%;--z:' + it.z[2] + '"><div class="mzin"><img src="assets/shot/map.jpg" alt="두근두근 당곡 항해 지도">' + svg + '</div></div></div>' +
+        '<div class="mzcard">' + it.rows.map(function (r, k) { return '<div class="mzr" style="--k:' + k + '"><b class="t' + k + '">' + esc(r[0]) + '</b><p>' + esc(r[1]) + '</p></div>'; }).join("") + '</div></div>';
+    }
     if (it.type === "mapzoom") return '<div class="phead">' + esc(it.head) + '</div><div class="mzrow"><div class="mzwrap"><div class="mzbox" style="--cx:' + it.z[0] + '%;--cy:' + it.z[1] + '%;--z:' + it.z[2] + '" data-lb="assets/shot/map.jpg" data-cap="두근두근 당곡 항해 지도"><img src="assets/shot/map.jpg" alt="두근두근 당곡 항해 지도"></div></div>' +
       '<div class="mzcard">' + it.rows.map(function (r, k) { return '<div class="mzr" style="--k:' + k + '"><b class="t' + k + '">' + esc(r[0]) + '</b><p>' + esc(r[1]) + '</p></div>'; }).join("") + '</div></div>';
     if (it.type === "newstar") return head(it) + '<div class="nsbox" data-lb="' + it.to + '" data-cap="' + esc(it.head) + '"><img class="ns-from" src="' + it.from + '" alt="처음 별자리"><img class="ns-to" src="' + it.to + '" alt="활동을 담은 뒤 별자리">' +

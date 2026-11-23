@@ -334,3 +334,90 @@ body{background:#e9edf5}
 .mzr b.t0{background:#2563eb}.mzr b.t1{background:#7c3aed}.mzr b.t2{background:#ea580c}.mzr b.t3{background:#16a34a}
 .mzr p{font-size:23px;font-weight:700;line-height:1.45;color:#1f2937}
 #sData .dc b{font-size:27px}
+/* 4장 데이터 여정 */
+.mzbox.jbox{cursor:default}
+.mzbox .mzin{position:absolute;inset:0;transform-origin:var(--cx) var(--cy);transition:transform 1.4s cubic-bezier(.3,.1,.2,1)}
+.pane.on .mzbox .mzin{transform:translate(calc(50% - var(--cx)),calc(50% - var(--cy))) scale(var(--z))}
+.pane.on .mzbox.jbox img{transform:none!important}
+.mzin img{position:absolute;inset:0;width:100%;height:100%}
+.jsvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.jsvg text{font-family:"Pretendard",sans-serif}
+.jsvg .jline{stroke-dashoffset:0}
+.jtok{opacity:0}
+.pane.on .jtok{animation:tokIn .4s ease forwards;animation-delay:1.3s}
+.pane.on .jtok.side{animation-delay:2.5s}
+@keyframes tokIn{to{opacity:1}}
+.mzr b.t0{background:#f59e0b}.mzr b.t1{background:#2563eb}.mzr b.t2{background:#7c3aed}.mzr b.t3{background:#16a34a}
+/* 4장: 데이터 여정 흐름도 */
+.fsbox{position:relative;width:1310px;height:500px;flex:none;margin:0 auto;background:linear-gradient(#ffffff,#f6f8fc);border:1px solid var(--line);border-radius:22px}
+.fssvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.fse{fill:none;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+.fse.future{stroke:#dbe2ee;stroke-dasharray:8 10;stroke-width:4}
+.fse.done{stroke:#f59e0b}
+.fse.all{stroke:#f6c56b}
+.fse.cur{stroke:#f59e0b;stroke-dasharray:14 10;animation:fsdash 1s linear infinite}
+.fse.loop{stroke:#16a34a;stroke-dasharray:12 10;stroke-width:5;animation:fsdash 1.2s linear infinite}
+.fse.branch{stroke:#8b5cf6;stroke-dasharray:12 10;stroke-width:5;animation:fsdash 1.2s linear infinite}
+@keyframes fsdash{to{stroke-dashoffset:-24}}
+.fsel{font-size:18px;font-weight:850;fill:#15803d}
+.fsn{position:absolute;width:224px;height:88px;translate:-50% -50%;background:#fff;border:2px solid var(--line);border-radius:18px;display:grid;grid-template-columns:44px 1fr;grid-template-rows:auto auto;align-content:center;column-gap:8px;padding:0 14px;transition:all .4s}
+.fsn i{grid-row:1/3;font-style:normal;font-size:32px;align-self:center}
+.fsn b{font-size:22px;font-weight:850;line-height:1.2}
+.fsn small{font-size:15px;color:var(--sub);font-weight:650}
+.fsn.later,.fsn.dim{opacity:.45}
+.fsn.visited{border-color:#fcd34d;background:#fffbeb}
+.fsn.active{border-color:#f59e0b;background:#fff7d6;box-shadow:0 0 0 6px rgba(245,158,11,.18),0 14px 30px rgba(245,158,11,.25);opacity:1}
+.fsn.active.br{border-color:#8b5cf6;background:#f5f3ff;box-shadow:0 0 0 6px rgba(139,92,246,.15)}
+.fsn.on{border-color:#fcd34d}
+.fstok{position:absolute;left:0;top:0;width:0;height:0;z-index:3;animation-duration:1.8s;animation-timing-function:cubic-bezier(.4,0,.2,1);animation-fill-mode:both;animation-play-state:paused}
+.pane.on .fstok{animation-play-state:running;animation-delay:.6s}
+.fstok.loop{animation-duration:12s;animation-iteration-count:infinite;animation-timing-function:linear}
+.fstok.br{animation-delay:2.6s!important;animation-duration:1.6s}
+.fstok span{position:absolute;left:0;top:-70px;translate:-50% 0;white-space:nowrap;background:#1e293b;color:#fff;font-size:21px;font-weight:850;padding:8px 16px;border-radius:999px;box-shadow:0 10px 24px rgba(15,23,42,.3)}
+.fstok::before{content:"";position:absolute;left:-14px;top:-14px;width:28px;height:28px;border-radius:50%;background:#fde047;border:4px solid #fff;box-shadow:0 0 0 4px rgba(245,158,11,.35),0 0 24px rgba(245,158,11,.7)}
+.fstok.br span{background:#6d28d9}
+.fstok.br::before{background:#c4b5fd;box-shadow:0 0 0 4px rgba(139,92,246,.3)}
+.fsrows{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;flex:none}
+.fsrows .mzr p{font-size:20px}
+/* 4장 v3: 흐름도(왼쪽) + 기록 카드(오른쪽) */
+.fsrow2{flex:1;min-height:0;display:grid;grid-template-columns:880px 1fr;gap:20px;align-items:start}
+.fsbox{margin:0}
+.fsn{width:196px;height:80px;grid-template-columns:38px 1fr;padding:0 12px}
+.fsn i{font-size:28px}.fsn b{font-size:20px}.fsn small{font-size:14px}
+.fstok span{font-size:19px;top:-64px}
+.frec{background:#fff;border:2px solid #e2e8f0;border-radius:22px;box-shadow:0 16px 40px rgba(30,50,110,.12);overflow:hidden}
+.frh{display:flex;gap:12px;align-items:center;padding:16px 20px;background:linear-gradient(90deg,#fff7d6,#fef3c7);border-bottom:2px dashed #fcd34d}
+.frh span{font-size:32px}.frh b{display:block;font-size:24px;font-weight:900}.frh small{font-size:16px;font-weight:700;color:#92400e}
+.frec dl{margin:0;padding:8px 20px 10px}
+.frf{display:grid;grid-template-columns:104px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid #f1f5f9;opacity:0}
+.pane.on .frf{animation:rise .5s ease forwards;animation-delay:calc(2.2s + var(--q) * .28s)}
+.frf dt{font-size:17px;font-weight:850;color:#64748b;padding-top:3px}
+.frf dd{margin:0;font-size:21px;font-weight:750;line-height:1.4;color:#0f172a}
+.frf.new dd{background:linear-gradient(transparent 62%,#fde68a 62%)}
+.frf dd em{font-style:normal;font-size:13px;font-weight:900;color:#fff;background:#f59e0b;border-radius:999px;padding:1px 8px;margin-left:8px;vertical-align:3px}
+.frfoot{margin:0;padding:12px 20px 16px;font-size:17px;font-weight:700;color:#475569;background:#f8fafc}
+/* 4장 v4: 메뉴는 좁게, 흐름도는 원래 크기, 오른쪽에 아하 + 모의 기록 */
+#sMap .mwrap{grid-template-columns:250px 1fr;gap:20px;height:820px;margin-top:14px}
+#sMap .mi{grid-template-columns:40px 1fr;padding:8px 10px;gap:8px}
+#sMap .mi img{height:38px;width:40px}
+#sMap .mi b{font-size:19px}
+#sMap .mi span{font-size:13px}
+#sMap .mi .no{width:22px;height:22px;font-size:12px;left:6px;top:6px}
+#sMap .mlist .legend{font-size:15px}
+#sMap .pane .phead{font-size:30px}
+#sMap .fsrow2{grid-template-columns:1000px 1fr;gap:18px}
+#sMap .fsn{width:224px;height:88px;grid-template-columns:44px 1fr;padding:0 14px}
+#sMap .fsn i{font-size:32px}#sMap .fsn b{font-size:22px}#sMap .fsn small{font-size:15px}
+#sMap .fstok span{font-size:20px;top:-68px}
+.frcol{display:flex;flex-direction:column;gap:12px}
+.faha{display:flex;gap:10px;align-items:flex-start;background:#1e3a8a;color:#fff;border-radius:18px;padding:14px 16px;opacity:0;box-shadow:0 12px 30px rgba(30,58,138,.25)}
+.pane.on .faha{animation:rise .6s ease forwards;animation-delay:2s}
+.faha span{font-size:26px}
+.faha p{font-size:21px;font-weight:850;line-height:1.4}
+.fthr{margin:10px 16px 0;padding:8px 12px;border-radius:12px;background:#fdf2f8;border:1.5px solid #f9a8d4;color:#9d174d;font-size:16px;font-weight:800;line-height:1.4}
+#sMap .frf{grid-template-columns:84px 1fr;padding:8px 0}
+#sMap .frf dt{font-size:15px}
+#sMap .frf dd{font-size:18px}
+#sMap .frh{padding:12px 16px}#sMap .frh b{font-size:21px}#sMap .frh small{font-size:14px}
+#sMap .frec dl{padding:4px 16px 6px}
+#sMap .frfoot{font-size:15px;padding:10px 16px 12px}
