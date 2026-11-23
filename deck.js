@@ -189,11 +189,16 @@
       while (focus.children.length) { var c = focus.children.pop(); if (c.geometry) c.geometry.dispose(); }
       hi = hi.filter(function (h) { if (h.k >= 0) { h.el.remove(); return false; } return true; }); beams = [];
       var dot = me.material.map, sp = me.position;
+      // 가까운 직업들이 화면에 적당히 크게 들어오도록: 학생 별 + 고른 직업들의 가운데로, 퍼진 정도에 맞춰 거리
+      var cen = sp.clone(), pts = [sp.clone()];
+      tops.forEach(function (o) { var j = N.jobs[o.i], v = new T.Vector3(j.p[0]*SC, j.p[1]*SC, j.p[2]*SC); cen.add(v); pts.push(v); });
+      cen.multiplyScalar(1 / pts.length); var rad = 0; pts.forEach(function (v) { rad = Math.max(rad, v.distanceTo(cen)); });
+      want.copy(cen); wantDist = Math.max(80, Math.min(340, rad * 2.5 + 35));
       tops.forEach(function (o, q) { var j = N.jobs[o.i], jp = new T.Vector3(j.p[0]*SC, j.p[1]*SC, j.p[2]*SC);
         var ln = new T.Line(new T.BufferGeometry().setFromPoints([sp, jp]), new T.LineBasicMaterial({ color: 0xfde68a, transparent: true, opacity: 0, depthWrite: false, blending: T.AdditiveBlending })); focus.add(ln);
         var st = new T.Sprite(new T.SpriteMaterial({ map: dot, color: new T.Color(gcol[j.g] || "#fde68a"), transparent: true, depthWrite: false, blending: T.AdditiveBlending })); st.position.copy(jp); st.scale.set(.1, .1, 1); focus.add(st);
         beams.push({ ln: ln, st: st, k: q, w: o.s });
-        if (q < 3) { var el = document.createElement("div"); el.className = "e3j"; el.innerHTML = '<b>' + (q + 1) + '. ' + esc(j.n) + '</b><em>' + o.s.toFixed(2) + '</em>' + (o.cn ? '<small>🇰🇷 ' + esc(o.cn.n) + '</small>' : ''); labels.appendChild(el); hi.push({ el: el, p: jp, k: q }); } });
+        if (q < 3) { var el = document.createElement("div"); el.className = "e3j r" + q; el.innerHTML = '<b>' + (q + 1) + '. ' + esc(j.n) + '</b><em>' + o.s.toFixed(2) + '</em>' + (o.cn ? '<small>🇰🇷 ' + esc(o.cn.n) + '</small>' : ''); labels.appendChild(el); hi.push({ el: el, p: jp, k: q }); } });
     }
     function place(el, p, W, H, show) { var v = p.clone().project(cam); el.style.transform = "translate(" + ((v.x + 1) / 2 * W) + "px," + ((1 - v.y) / 2 * H) + "px)"; el.style.opacity = show && v.z < 1 ? "" : "0"; }
     function frame(now) {
