@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#070B20" />
+    <title>꿈의 별자리 시연</title>
+    <!-- 발표 덱 정적 시연판(2026-11-23): 원본 explorer/star.html 사본. 서버 없이 data/*.json(모의 학생)을 읽는다. -->
+    <style>html,body{margin:0;height:100%;background:#070B20;color:#EEF1FF}</style>
+    <link rel="stylesheet" href="star.css" />
+    <script defer src="star.js"></script>
+  </head>
+  <body>
+    <div class="demo-band" role="note"><i></i>모의 학생 시연 · 실제 학생 정보 0건<i></i></div>
+    <header>
+      <a class="back" id="back" href="#" hidden>← 탐험 일지</a>
+      <b>두근두근 탐험대</b><span class="n">01 나를 발견하기 · 02 나와 맞는 직업 찾기 ·</span><span class="cur">03 꿈의 별자리</span>
+      <span class="r" id="who"></span>
+      <div class="vsw" role="group" aria-label="별자리 판"><span class="vl">별자리 판</span><button id="vfirst" type="button" aria-pressed="false">처음</button><button id="vnow" type="button" aria-pressed="true">지금</button></div>
+      <button class="listbtn" id="listbtn" type="button" aria-expanded="false" aria-controls="list">목록</button>
+    </header>
+    <div id="stage" aria-label="꿈의 별자리. 휠이나 두 손가락으로 확대·축소, 끌어서 이동"><svg id="sky" role="img" aria-label="왼쪽 아래 오늘의 나에서 오른쪽 위 꿈의 직업까지 이어진 별자리"></svg></div>
+    <div class="card" id="card"><h2>불러오는 중</h2><p></p></div>
+    <div class="gauge" id="gauge"></div>
+    <div class="lsw" role="group" aria-label="선 모양"><button id="ls" aria-pressed="true">직선</button><button id="lc" aria-pressed="false">곡선</button></div>
+    <div class="ctrl" role="group" aria-label="확대·축소"><button id="zin" aria-label="확대">＋</button><button id="zout" aria-label="축소">－</button><button id="fit" class="fit" aria-label="전체 보기">전체</button><span class="z" id="zl">100%</span></div>
+    <div class="pick" id="pick"></div>
+    <section class="list" id="list" hidden aria-label="별자리 목록"></section>
+  <script>/* 덱 안에서: 방향키 등은 덱으로 넘김 */addEventListener("keydown",function(e){if(["ArrowLeft","ArrowRight","ArrowUp","ArrowDown","PageUp","PageDown"," ","Home","End","f","F","n","N"].indexOf(e.key)>=0&&window.parent!==window){e.preventDefault();parent.postMessage({deckKey:e.key},"*");}});</script>
+</body>
+</html>

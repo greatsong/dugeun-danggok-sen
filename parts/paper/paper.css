@@ -1,0 +1,154 @@
+/* 종이 → 디지털 부품 (PaperDemo) — 1450×690 기준, 모든 이름은 pd- 로 시작 */
+.pd-root{position:absolute;left:0;top:0;width:1450px;height:690px;transform-origin:0 0;overflow:hidden;cursor:pointer;
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:#1f2430;word-break:keep-all;-webkit-user-select:none;user-select:none}
+.pd-root *{box-sizing:border-box}
+.pd-hw{font-family:"Nanum Pen Script","Gaegu",cursive;color:#22377a;font-weight:400;line-height:1;white-space:pre}
+.pd-c{display:inline-block;opacity:0;transform:translateY(3px) scale(.86);transition:opacity .13s ease,transform .16s ease}
+.pd-c.on{opacity:1;transform:var(--r,none)}
+.pd-hw.done .pd-c{opacity:1;transform:var(--r,none);transition:none}
+
+/* ── 종이 한 장(앞 · 뒤) ── */
+.pd-sheet{position:absolute;perspective:2600px}
+.pd-tilt{position:absolute;inset:0}
+.pd-card3d{position:absolute;inset:0;transform-style:preserve-3d;transition:transform 1.25s cubic-bezier(.45,.05,.25,1)}
+.pd-card3d.pd-lift{animation:pdLift 1.25s ease-in-out}
+@keyframes pdLift{40%{translate:0 -18px}}
+.pd-card3d.pd-flipped{transform:rotateY(-180deg)}
+.pd-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:6px;overflow:hidden;
+  background:#fffaf0;background-image:radial-gradient(120% 90% at 30% 0%,rgba(255,255,255,.7),rgba(255,255,255,0) 60%);
+  box-shadow:0 22px 44px rgba(31,36,48,.16),0 3px 8px rgba(31,36,48,.10);border:1px solid #ece2cc;display:flex;flex-direction:column}
+.pd-back{transform:rotateY(180deg)}
+.pd-head{display:flex;align-items:center;gap:14px;border-bottom:2.5px solid #1f2430;padding-bottom:9px}
+.pd-tag{font-size:20px;font-weight:800;color:#fff;background:#1f2430;border-radius:8px;padding:3px 11px;white-space:nowrap}
+.pd-title{font-size:34px;font-weight:850;letter-spacing:-.02em;white-space:nowrap}
+.pd-title small{font-size:24px;font-weight:700;color:#6b6352;margin-left:8px;letter-spacing:0}
+.pd-who{margin-left:auto;display:flex;align-items:flex-end;gap:10px;font-size:20px;color:#5b5446;font-weight:600;white-space:nowrap}
+.pd-who .pd-fill{display:inline-block;min-width:120px;border-bottom:1.5px solid #9c937f;height:34px;padding-left:6px}
+.pd-who .pd-hw{font-size:36px}
+.pd-how{font-size:20px;color:#5b5446;margin:10px 0 10px;font-weight:550;white-space:nowrap}
+.pd-how b{color:#1f2430;font-weight:800}
+.pd-tbl{display:grid;border-top:1.5px solid #b9ae95;border-left:1.5px solid #b9ae95}
+.pd-tbl>div{border-right:1.5px solid #cfc5ad;border-bottom:1.5px solid #d6ccb5;display:flex;align-items:center;position:relative;min-width:0}
+.pd-tbl .pd-th{background:#f2ead6;font-size:20px;font-weight:800;justify-content:center;height:42px;color:#3b3528}
+.pd-tbl .pd-n{justify-content:center;font-size:20px;color:#8a8170;font-weight:700}
+.pd-tbl .pd-t{padding:0 14px;overflow:visible}
+.pd-tbl .pd-t .pd-hw{font-size:38px;transform:translateY(2px)}
+.pd-tbl .pd-b .pd-hw{font-size:30px}
+.pd-tbl .pd-b{padding:0 10px}
+.pd-scale{justify-content:space-evenly;font-size:20px;color:#9a907b;font-weight:700}
+.pd-scale span{display:inline-block;min-width:26px;text-align:center}
+.pd-scale span.pd-picked{color:#22377a}
+.pd-ring{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.pd-ring path{fill:none;stroke:#22377a;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1}
+.pd-ring path.on{transition:stroke-dashoffset .42s ease-in-out;stroke-dashoffset:0}
+.pd-ring path.done{stroke-dashoffset:0}
+.pd-less{margin-top:12px;border:2px dashed #8e8572;border-radius:12px;padding:8px 16px;display:flex;align-items:center;gap:18px;min-height:62px}
+.pd-less b{font-size:20px;font-weight:800;white-space:nowrap}
+.pd-less .pd-line{flex:1;border-bottom:1.5px solid #cfc5ad;height:44px;display:flex;align-items:flex-end;padding:0 6px 3px}
+.pd-less .pd-hw{font-size:36px}
+.pd-foot{margin-top:auto;font-size:20px;color:#8a8170;font-weight:600;display:flex;justify-content:space-between}
+
+/* 펜 */
+.pd-pen{position:absolute;left:0;top:0;width:66px;height:66px;pointer-events:none;z-index:20;opacity:0;transition:transform .1s linear,opacity .25s;filter:drop-shadow(3px 6px 4px rgba(31,36,48,.25))}
+.pd-pen.on{opacity:1}
+
+/* 옆 안내 */
+.pd-side{position:absolute;display:flex;flex-direction:column;gap:14px}
+.pd-mock{display:inline-flex;align-items:center;gap:8px;font-size:20px;font-weight:800;color:#8a5a00;background:#fff3c4;border:1.5px solid #f2d27a;border-radius:999px;padding:6px 16px;white-space:nowrap;align-self:flex-start}
+.pd-step{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:800;color:#a3abba;transition:color .3s}
+.pd-step i{font-style:normal;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:20px;background:#e8ecf3;color:#8a94a6;flex:none;transition:all .3s}
+.pd-step.on{color:#1f2430}
+.pd-step.on i{background:#1d4ed8;color:#fff;box-shadow:0 0 0 6px rgba(29,78,216,.14)}
+.pd-step.done{color:#4b5563}
+.pd-step.done i{background:#c7d4f5;color:#1d4ed8}
+.pd-count{font-size:22px;font-weight:700;color:#4b5563;margin-top:6px}
+.pd-count b{font-size:30px;color:#1d4ed8}
+.pd-fast{align-self:flex-start;font-size:20px;font-weight:850;color:#fff;background:#6d4fe0;border-radius:999px;padding:5px 14px;opacity:0;transform:scale(.8);transition:all .3s}
+.pd-fast.on{opacity:1;transform:none}
+
+/* ── 작은 종이(디지털 모드 왼쪽) ── */
+.pd-mini .pd-face{padding:18px 22px}
+.pd-mini .pd-title{font-size:26px}
+.pd-mini .pd-title small{font-size:20px}
+.pd-mini .pd-tag{font-size:20px;padding:2px 9px}
+.pd-mini .pd-tbl .pd-t{padding:0 8px}
+.pd-mini .pd-tbl .pd-t .pd-hw{font-size:29px}
+.pd-mini .pd-tbl .pd-n{font-size:20px}
+.pd-mini .pd-pc{justify-content:center}
+.pd-mini .pd-pc .pd-hw{font-size:27px}
+.pd-mini .pd-less{margin-top:10px;padding:6px 10px;gap:10px;min-height:54px}
+.pd-mini .pd-less .pd-line{height:40px}
+.pd-mini .pd-less .pd-hw{font-size:28px}
+.pd-row-hi{background:linear-gradient(transparent 18%,rgba(253,224,71,.55) 18%,rgba(253,224,71,.55) 86%,transparent 86%)}
+.pd-moved .pd-hw{opacity:.42;transition:opacity .4s}
+.pd-tick{position:absolute;right:-4px;top:50%;translate:0 -50%;font-size:20px;font-weight:900;color:#15803d;opacity:0;transition:opacity .3s}
+.pd-moved .pd-tick{opacity:1}
+
+/* 날아가는 글 */
+.pd-flyx{position:absolute;left:0;top:0;z-index:30;pointer-events:none;transition:transform .75s cubic-bezier(.55,0,.25,1)}
+.pd-flyy{transition:transform .75s cubic-bezier(.2,.6,.3,1),opacity .25s}
+.pd-flyy>span{display:inline-block;background:#fff8cf;border:2px solid #f2cf55;border-radius:12px;padding:2px 12px;box-shadow:0 10px 22px rgba(31,36,48,.18);white-space:nowrap}
+.pd-flyy .pd-hw{font-size:30px}
+.pd-flyy.pd-pill{padding:0}
+
+/* ── 휴대폰 ── */
+.pd-phone{position:absolute;width:390px;height:670px;border:11px solid #1f2430;border-radius:48px;background:#f7f8fb;overflow:hidden;
+  box-shadow:0 26px 50px rgba(31,36,48,.22);transition:opacity .6s,transform .6s;display:flex;flex-direction:column;padding:12px 14px 0}
+.pd-notch{position:absolute;left:50%;top:6px;translate:-50% 0;width:110px;height:22px;border-radius:12px;background:#1f2430}
+.pd-ptop{display:flex;justify-content:space-between;align-items:center;margin-top:24px;font-size:20px;font-weight:850}
+.pd-ptop span{font-size:20px;font-weight:600;color:#6b7280}
+.pd-ptop em{font-style:normal;color:#f5b301}
+.pd-ptitle{font-size:24px;font-weight:850;margin:8px 0 8px;letter-spacing:-.02em}
+.pd-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pd-tab{border:2px solid #e1e5ee;border-radius:14px;background:#fff;text-align:center;padding:5px 2px;font-size:20px;font-weight:800;line-height:1.25;transition:all .25s}
+.pd-tab span{display:block;font-weight:700;color:#6b7280}
+.pd-tab.on{border-color:#e4719e;background:#fff0f6;color:#a3174f}
+.pd-tab.on span{color:#a3174f}
+.pd-tab.bump span{animation:pdBump .35s}
+@keyframes pdBump{50%{transform:scale(1.35)}}
+.pd-card{margin-top:10px;background:#fff;border:2px solid #e1e5ee;border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.pd-inp{height:50px;border:2px solid #cfd6e2;border-radius:12px;display:flex;align-items:center;padding:0 10px;font-size:20px;font-weight:600;white-space:nowrap;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.pd-inp.focus{border-color:#1d4ed8;box-shadow:0 0 0 4px rgba(29,78,216,.12)}
+.pd-inp .ph{color:#a3abba;font-weight:500}
+.pd-inp .cur{display:inline-block;width:2px;height:24px;background:#1d4ed8;margin-left:1px;animation:pdBlink 1s steps(1) infinite}
+@keyframes pdBlink{50%{opacity:0}}
+.pd-chips{display:flex;gap:5px;justify-content:space-between}
+.pd-chips.hide,.pd-inp.hide{display:none}
+.pd-chip{font-size:20px;font-weight:700;color:#6b7280;border:2px solid #e1e5ee;border-radius:999px;padding:2px 0;flex:1;text-align:center;background:#fff;transition:all .2s}
+.pd-chip.on{border-color:#e0679a;background:#ffe4ef;color:#a3174f;transform:scale(1.08)}
+.pd-add{font-size:20px;font-weight:800;color:#1d4ed8;align-self:flex-end;transition:transform .15s}
+.pd-add.press{transform:scale(.9)}
+.pd-list{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;padding:10px 2px 10px}
+.pd-li{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:600;background:#fff;border:1.5px solid #e6e9f0;border-radius:12px;padding:6px 10px;animation:pdIn .35s ease-out}
+.pd-li .tx{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pd-li .pc{flex:none;font-size:20px;font-weight:800;color:#a3174f;background:#ffe4ef;border-radius:999px;padding:0 9px}
+@keyframes pdIn{from{opacity:0;transform:translateY(10px)}}
+.pd-save{margin:0 -14px;padding:12px 16px 16px;background:#fff;border-top:1.5px solid #e6e9f0;display:flex;align-items:center;justify-content:space-between}
+.pd-save span{font-size:20px;color:#6b7280;font-weight:600}
+.pd-save button{font:inherit;font-size:22px;font-weight:850;color:#3b2a00;background:#fcd34d;border:0;border-radius:999px;padding:11px 30px;box-shadow:0 6px 14px rgba(245,179,1,.3);transition:transform .15s}
+.pd-save button.press{transform:scale(.9);background:#f5b301}
+.pd-toast{position:absolute;left:24px;right:24px;top:300px;background:#1f2430;color:#fff;font-size:22px;font-weight:800;border-radius:18px;padding:18px 14px;text-align:center;opacity:0;transform:translateY(14px) scale(.96);transition:all .3s;box-shadow:0 16px 34px rgba(31,36,48,.3)}
+.pd-toast b{color:#86efac;margin-right:8px}
+.pd-toast.on{opacity:1;transform:none}
+
+/* ── 네 칸 판 ── */
+.pd-board{position:absolute;inset:0;padding:4px 10px 10px;opacity:0;transition:opacity .6s;display:flex;flex-direction:column;pointer-events:none}
+.pd-board.on{opacity:1}
+.pd-bhead{display:flex;align-items:baseline;gap:18px;height:58px}
+.pd-bhead b{font-size:32px;font-weight:850;letter-spacing:-.02em}
+.pd-bhead span{font-size:21px;color:#4b5563;font-weight:600}
+.pd-grid{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:16px}
+.pd-q{border:2.5px solid;border-radius:22px;padding:14px 20px;display:flex;flex-direction:column;gap:6px;transform:scale(.97);transition:transform .5s}
+.pd-board.on .pd-q{transform:none}
+.pd-q h4{display:flex;justify-content:space-between;align-items:baseline;font-size:25px;font-weight:850;margin:0}
+.pd-q h4 span{font-size:22px;font-weight:800}
+.pd-q p{font-size:20px;color:#4b5563;font-weight:550;margin:0 0 6px}
+.pd-pills{display:flex;flex-wrap:wrap;gap:10px 10px;align-content:flex-start}
+.pd-pill{display:inline-block;font-size:22px;font-weight:700;background:#fff;border:2px solid #d5dae4;border-radius:999px;padding:6px 16px;white-space:nowrap;color:#1f2430}
+.pd-pills .pd-pill{visibility:hidden}
+.pd-pills .pd-pill.on{visibility:visible;animation:pdPop .35s cubic-bezier(.2,.9,.25,1.3)}
+@keyframes pdPop{from{transform:scale(.7)}}
+.pd-q1{border-color:#e8b923;background:#fffbea}.pd-q1 h4 span{color:#a16207}.pd-q1 .pd-pill{border-color:#e8b923;background:#fff}
+.pd-q4{border-color:#e4719e;background:#fff3f8}.pd-q4 h4 span{color:#a3174f}.pd-q4 .pd-pill{border-color:#f0a7c4}
+.pd-q2{border-color:#7c9cf0;background:#f2f6ff}.pd-q2 h4 span{color:#1d4ed8}.pd-q2 .pd-pill{border-color:#adc1f6}
+.pd-q3{border-color:#b8bfcc;background:#f5f6f8}.pd-q3 h4 span{color:#4b5563}.pd-q3 .pd-pill{border-color:#cfd4dd}
